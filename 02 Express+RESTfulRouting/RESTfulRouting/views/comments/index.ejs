@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COMMENTS</title>
+</head>
+<body>
+    <h1>ALL COMMENTS LIST:</h1>
+    <ul>
+        <% for (let c of comments) { %>
+            <li>
+                <b><%= c.user %></b> - <%= c.comment %> - <a href="/comments/<%= c.id %>">More Details</a>
+            </li> 
+        <% } %>
+    </ul>
+    <form action="/comments/new" method="get">
+        <button>New Comment</button>
+    </form>
+    
+</body>
+</html>

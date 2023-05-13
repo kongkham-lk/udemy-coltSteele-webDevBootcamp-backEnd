@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show Index</title>
+</head>
+<body>
+    <h1><%= campground.title %></h1>
+    <h2><%= campground.location %></h2>
+    <section style="display: flex;">
+        <form action="/campgrounds/<%= campground._id %>/edit" style="margin-right: 10px;">
+            <button>Edit</button>
+        </form>
+        <form action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST" style="margin-right: 10px;">
+            <button>Delete</button>
+        </form>
+        <form action="/campgrounds" style="margin-right: 10px;">
+            <button>All Campground</button>
+        </form>
+    </section>
+</body>
+</html>

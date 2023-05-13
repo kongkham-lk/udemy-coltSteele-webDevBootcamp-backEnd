@@ -1,0 +1,42 @@
+{
+    "soccer": {
+        "name": "soccer",
+        "subscribers": 80000,
+        "description": "The football subreddit. News, results and discussion",
+        "posts": [
+            {
+                "title": "soccer - Laudantium hic necessitatibus? Vitae libero quidem illum eveniet fugiat.",
+                "author": "joeextreme"
+            },
+            {
+                "title": "soccer - Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sint repellat ab  in maxime eaque illo culpa, labore sed ea.",
+                "author": "odd person",
+                "img": "https://fivethirtyeight.com/wp-content/uploads/2022/11/GettyImages-1442587075-e1668806020544.jpg?w=917"
+            },
+            {
+                "title": "soccer - Sint repellat ab  in maxime eaque illo culpa, labore sed ea.",
+                "author": "even person"
+            }
+        ]
+    },
+    "chicken": {
+        "name": "chicken",
+        "subscribers": 235545,
+        "description": "The chicken subreddit. News, results and discussion",
+        "posts": [
+            {
+                "title": "chicken - Laudantium hic necessitatibus? Vitae libero quidem illum eveniet fugiat.",
+                "author": "jipjip"
+            },
+            {
+                "title": "chicken - Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sint repellat ab  in maxime eaque illo culpa, labore sed ea.",
+                "author": "odd chicken",
+                "img": "https://t2.gstatic.com/licensed-image?q=tbn:ANd9GcQT63l4uedVIJHPGrWZrlz9eRmtDgC2mqRAR4GJM33oCC7wMSRfsYuZ1Yu7ApG7n7wF"
+            },
+            {
+                "title": "chicken - Sint repellat ab  in maxime eaque illo culpa, labore sed ea.",
+                "author": "even chicken"
+            }
+        ]
+    }
+}

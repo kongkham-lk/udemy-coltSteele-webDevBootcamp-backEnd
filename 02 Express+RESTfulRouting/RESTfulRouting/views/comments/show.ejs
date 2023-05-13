@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show Specific Index</title>
+</head>
+<body>
+    <h3><i>Comment ID - #<%= comment.id %>.</i></h3>
+    <p><b><%= comment.user %></b> - <%= comment.comment %></p>
+    <section style="display: flex;">
+        <form action="/comments/<%= comment.id %>/edit" style="margin-right: 10px;">
+            <button>Edit</button>
+        </form>
+        <form method="POST" action="/comments/<%= comment.id %>?_method=DELETE" style="margin-right: 10px;">
+            <button>Delete</button>
+        </form>
+        <form action="/comments">
+            <button>Back</button>
+        </form>
+    </section>
+</body>
+</html>

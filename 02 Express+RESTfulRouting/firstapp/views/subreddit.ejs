@@ -1,0 +1,18 @@
+    <%- include('partial/header.ejs') %>
+    <div class="container">
+        <h1>This is <%= name %> page</h1> 
+        <h2>Total Subscribers are: <%= subscribers %></h2>
+        <h3>Description: <%= description %></h3>
+        <hr>
+        <% for(let post of posts) { %>
+        <article>
+            <p><%= post.title %> - <b><%= post.author %></b></p>
+            <!-- if there is post.img then display the img -->
+            <% if (post.img) { %>
+                <img src=<%= post.img %> alt=<%= name %> style="width: 500px;"/>
+            <% } %>
+        </article>
+        <% } %>
+    </div>
+</body>
+</html>
