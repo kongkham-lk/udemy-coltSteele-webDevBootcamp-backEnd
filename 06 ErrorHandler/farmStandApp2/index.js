@@ -34,6 +34,7 @@ app.use(methodOverride('_method'));
 
 const categories = ['fruit', 'vegetable', 'dairy'];
 
+// same as "const catchAsync = (fn) => {...}"
 function catchAsync(fn) {
     return function (req, res, next) {
         fn(req, res, next).catch(e => next(e));

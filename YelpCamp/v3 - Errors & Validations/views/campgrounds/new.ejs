@@ -6,21 +6,21 @@
             <form action="/campgrounds" method="POST" novalidate class="need-validation">
                 <div class="mb-3">
                     <label class="form-label" for="title">Title</label>
-                    <input class="form-control" type="text" name="title" id="title" required>
+                    <input class="form-control" type="text" name="campground[title]" id="title" required>
                     <div class="valid-feedback">
                         Looks good!
                     </div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="location">Location</label>
-                    <input class="form-control" type="text" name="location" id="location" required>
+                    <input class="form-control" type="text" name="campground[location]" id="location" required>
                     <div class="valid-feedback">
                         Looks good!
                     </div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="image">Image Url</label>
-                    <input class="form-control" type="text" name="image" id="image" required>
+                    <input class="form-control" type="text" name="campground[image]" id="image" required>
                     <div class="valid-feedback">
                         Looks good!
                     </div>
@@ -30,7 +30,7 @@
                     <div class="input-group col-2 mb-3">
                         <span class="input-group-text" id="price">$</span>
                         <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)" id="price"
-                            name="price" placeholder="0.00" required>
+                            name="campground[price]" placeholder="0.00" required>
                         <div class="valid-feedback">
                             Looks good!
                         </div>
@@ -38,7 +38,8 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="description">Description</label>
-                    <textarea class="form-control" type="text" name="description" id="description" required></textarea>
+                    <textarea class="form-control" type="text" name="campground[description]" id="description"
+                        required></textarea>
                     <div class="valid-feedback">
                         Looks good!
                     </div>

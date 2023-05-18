@@ -10,7 +10,8 @@ const ejsMate = require('ejs-mate');
 
 const catchAsync = require('./utils/CatchAsync');
 const expressError = require('./utils/expressError');
-const CatchAsync = require('./utils/CatchAsync');
+
+const validateSchema = require('./models/validateSchema');
 
 mongoose.connect('mongodb://127.0.0.1:27017/yelpCamp')
     .then(() => {
@@ -29,7 +30,19 @@ app.use(express.urlencoded({ extended: true }))
 
 app.use(methodOverride('_method'));
 
+// for logging request detail
 app.engine('ejs', ejsMate);
+
+const validateInput = (req, res, next) => {
+    const { error } = validateSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map(el => el.message).join(', ');
+        throw new expressError(msg, 400);
+    } else {
+        // must include next() in order to pass to the next parameter within the same route handler
+        next();
+    }
+}
 
 app.get('/', (req, res) => {
     res.render('home');
@@ -41,40 +54,48 @@ app.get('/campgrounds', catchAsync(async (req, res) => {
     res.render('campgrounds/index', { campgrounds });
 }))
 
+
 // ROUTE FOR CREATE
 app.get('/campgrounds/new', (req, res) => {
     res.render('campgrounds/new');
 })
 
-app.post('/campgrounds', catchAsync(async (req, res) => {
-    if (!req.body) throw new expressError('Page Not Found', 400);
-    // if req.body return as a key-value pair object -> need to access its key as well -> e.g. req.body.campgrund
-    const campground = new Campground(req.body);
+
+app.post('/campgrounds', validateInput, catchAsync(async (req, res) => {
+    // if (!req.body.campground) throw new expressError('Invalide Campground Data', 400);
+    // since req.body return as a key-value pair object -> need to access its key as well -> e.g. req.body.campground
+    const campground = new Campground(req.body.campground);
     await campground.save();
     res.redirect(`/campgrounds/${campground._id}`);
 }))
 
 // ROUTE FOR SHOW - detail of each campground
-app.get('/campgrounds/:id', async (req, res) => {
+app.get('/campgrounds/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
-    const campground = await Campground.findById(id);
-    if (!campground) {
-        return next(new expressError('Product Not Found!!!', 404))
+    let campground;
+    try {
+        campground = await Campground.findById(id);
+    } catch (e) {
+        throw new expressError('Product Not Found!!!', 404);
     }
+    // campground = await Campground.findById(id);
+    // if (!campground) {
+    //     return next(new expressError('Product Not Found!!!', 404))
+    // }
     res.render('campgrounds/show.ejs', { campground })
-})
+}))
 
 // ROUTE FOR UPDATE
 app.get('/campgrounds/:id/edit', catchAsync(async (req, res) => {
     const { id } = req.params;
     const campground = await Campground.findById(id);
-    if (!campround) {
+    if (!campground) {
         return next(new expressError('Product Not Found!!!', 404))
     }
     res.render('campgrounds/edit', { campground })
 }))
 
-app.put('/campgrounds/:id', catchAsync(async (req, res) => {
+app.put('/campgrounds/:id', validateInput, catchAsync(async (req, res) => {
     const { id } = req.params;
     const updateCampground = await Campground.findByIdAndUpdate(id, req.body)
     res.redirect(`/campgrounds/${id}`);
@@ -92,8 +113,9 @@ app.use('*', (req, res, next) => {
 })
 
 app.use((err, req, res, next) => {
-    const { status = 500, message = 'OH NO, SOMETHING WENT WRONG !!!' } = err;
-    res.status(status).send(message)
+    const { status = 500 } = err;
+    if (!err.message) err.message = 'OH NO, SOMETHING WENT WRONG !!!'
+    res.status(status).render('error', { err })
     // res.send('OH NO, SOMETHING WENT WRONG !!!')
 });
 
