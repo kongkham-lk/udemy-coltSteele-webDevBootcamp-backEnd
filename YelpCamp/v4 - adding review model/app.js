@@ -1,17 +1,21 @@
 const express = require('express');
+const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
+const methodOverride = require('method-override');
+const ejsMate = require('ejs-mate');
+
+
 // the link REQUIRE ./
 const Campground = require('./models/campground');
+const Review = require('./models/review')
 
-const methodOverride = require('method-override');
-
-const ejsMate = require('ejs-mate');
 
 const catchAsync = require('./utils/CatchAsync');
 const expressError = require('./utils/expressError');
 
-const validateSchema = require('./models/validateSchema');
+const { campgroundSchema, reviewSchema } = require('./models/validateSchema');
+
 
 mongoose.connect('mongodb://127.0.0.1:27017/yelpCamp')
     .then(() => {
@@ -22,7 +26,6 @@ mongoose.connect('mongodb://127.0.0.1:27017/yelpCamp')
         console.log(err);
     });
 
-const app = express();
 
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
@@ -34,13 +37,23 @@ app.use(methodOverride('_method'));
 app.engine('ejs', ejsMate);
 
 const validateInput = (req, res, next) => {
-    const { error } = validateSchema.validate(req.body);
-    console.log(req.body)
+    const { error } = campgroundSchema.validate(req.body);
     if (error) {
         const msg = error.details.map(el => el.message).join(', ');
         throw new expressError(msg, 400);
     } else {
         // must include next() in order to pass to the next parameter within the same route handler
+        next();
+    }
+}
+
+const validateReview = (req, res, next) => {
+    const { error } = reviewSchema.validate(req.body);
+    if (error) {
+        console.log(error);
+        const msg = error.details.map(el => el.message).join(', ');
+        throw new expressError(msg, 400);
+    } else {
         next();
     }
 }
@@ -75,7 +88,7 @@ app.get('/campgrounds/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     let campground;
     try {
-        campground = await Campground.findById(id);
+        campground = await Campground.findById(id).populate('reviews');
     } catch (e) {
         throw new expressError('Product Not Found!!!', 404);
     }
@@ -107,6 +120,29 @@ app.delete('/campgrounds/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     const removeCampground = await Campground.findByIdAndDelete(id);
     res.redirect('/campgrounds')
+}))
+
+// adding review  
+app.post('/campgrounds/:id/reviews', validateReview, catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const campground = await Campground.findById(id).populate('reviews');
+    const review = new Review(req.body);
+    campground.reviews.push(review);
+    await campground.save();
+    await review.save();
+    res.redirect(`/campgrounds/${campground._id}`)
+}))
+
+// remove review (remove 2 things) -> remove both reference of the review inside campground and remove the review itself
+
+app.delete('/campgrounds/:id/reviews/:reviewId', catchAsync(async (req, res) => {
+    const { id, reviewId } = req.params;
+    const campground = await Campground.findById(id);
+    // REMOVE REVIEW REFERENCE from campground
+    await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+    await Review.findByIdAndDelete(reviewId);
+    console.log(campground)
+    res.redirect(`/campgrounds/${campground._id}`)
 }))
 
 app.use('*', (req, res, next) => {

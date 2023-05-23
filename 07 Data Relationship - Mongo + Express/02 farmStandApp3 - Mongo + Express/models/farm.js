@@ -25,7 +25,9 @@ const farmSchema = new Schema({
 farmSchema.post('findOneAndDelete', async function (farm) {
     // check if farm.product is empty
     if (farm.products.length) {
-        const res = await Product.deleteMany({ _id: { $in: farm.products } });
+        const res = await Product.deleteMany({
+            _id: { $in: farm.products }
+        });
         console.log(res);
     }
 })

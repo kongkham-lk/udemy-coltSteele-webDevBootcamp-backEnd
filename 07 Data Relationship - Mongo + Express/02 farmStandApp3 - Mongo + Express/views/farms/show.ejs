@@ -25,12 +25,14 @@
     <h2>Product:</h2>
     <ul>
         <% for(let product of farm.products) { %>
-            <li>
-                <a href="/products/<%= product._id %>">
-                    <%= product.name %> - $<%= product.price %> / <%= product.category %>
-                </a>
-            </li>
-            <% } %>
+            <% console.log('farm.products ->\n', farm.products) %>
+
+                <li>
+                    <a href="/products/<%= product._id %>">
+                        <%= product.name %> - $<%= product.price %> / <%= product.category %>
+                    </a>
+                </li>
+                <% } %>
     </ul>
     <section style="display:flex;">
         <form action="/farms" style="margin-right: 10px;">
