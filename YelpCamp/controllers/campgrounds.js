@@ -26,6 +26,10 @@ module.exports.createNewCampground = async (req, res) => {
         // how many results?
         limit: 1,
     }).send();
+    if (!geoData) {
+        req.flash('error', 'Invalid location, Retry again!');
+        res.redirect('/campgrounds/new');
+    }
     // if (!req.body.campground) throw new expressError('Invalide Campground Data', 400);
     // since req.body return as a key-value pair object -> need to access its key as well -> e.g. req.body.campground
     const campground = new Campground(req.body);

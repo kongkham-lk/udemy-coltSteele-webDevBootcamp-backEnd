@@ -115,14 +115,13 @@
         </div>
     </div>
 
-    <!-- // script about the display map default setting to display -->
+    <!-- cannot access the value within the separate file, NEED TO access first then pass through variable. -->
     <script>
-        // instead of direct insert mapbox-token => insert token in .env file instead => when want to edit, no need to go to edit many places
-        mapboxgl.accessToken = '<%- process.env.MAPBOX_TOKEN%>';
-        const map = new mapboxgl.Map({
-            container: 'map', // container ID
-            style: 'mapbox://styles/mapbox/streets-v12', // style URL
-            center: [-74.5, 40], // starting position [lng, lat]
-            zoom: 9, // starting zoom
-        });
+        const mapToken = '<%- process.env.MAPBOX_TOKEN %>';
+        // JSON.stringigy(campground) => to get the log of campground (each key-value pair data)
+        // NO QUOTATION - ELSE RETURN AS STRING AND IT WON'T WORK
+        const campground = <%- JSON.stringify(campground) %>;
     </script>
+    
+    <!-- link to display map default setting code file -->
+    <script src="/javascript/displayMap.js"></script>
