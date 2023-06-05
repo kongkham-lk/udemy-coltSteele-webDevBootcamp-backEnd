@@ -34,11 +34,11 @@ const resetDB = async () => {
             title: `${sample(descriptors)} ${sample(places)}`,
             images: [
                 {
-                    url: 'https://res.cloudinary.com/dsna5nqyl/image/upload/v1685647757/YelpCamp/mmfbbh7ajo9lqdsixfqc.jpg',
+                    url: 'https://res.cloudinary.com/dsna5nqyl/image/upload/v1685954792/image_ncjgre.png',
                     filename: 'YelpCamp/mmfbbh7ajo9lqdsixfqc',
                 },
                 {
-                    url: 'https://res.cloudinary.com/dsna5nqyl/image/upload/v1685605098/YelpCamp/p6o2eweqab3pccp2mpsn.jpg',
+                    url: 'https://res.cloudinary.com/dsna5nqyl/image/upload/v1685955093/image_1_sef2kj.png',
                     filename: 'YelpCamp/dc3pffqveqtz5bpe3jvd',
                 }
             ],
