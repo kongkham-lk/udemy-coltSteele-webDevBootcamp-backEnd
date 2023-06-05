@@ -104,11 +104,8 @@ map.on('load', () => {
     // description HTML from its properties.
     map.on('click', 'unclustered-point', (e) => {
         const coordinates = e.features[0].geometry.coordinates.slice();
-        const mag = e.features[0].properties.mag;
-        const campground = e.features[0];
-        console.log(e.features[0]);
-        const tsunami =
-            e.features[0].properties.tsunami === 1 ? 'yes' : 'no';
+        const popUpText = e.features[0].properties.popUpText;
+        console.log(e.features[0].properties);
 
         // Ensure that if the map is zoomed out such that
         // multiple copies of the feature are visible, the
@@ -119,9 +116,8 @@ map.on('load', () => {
 
         new mapboxgl.Popup()
             .setLngLat(coordinates)
-            .setHTML(
-                `<h6><a href="/campgrounds/${campground._id}">${campground.title}</a></h6><br>Location: ${campground.location}`
-            )
+            .setHTML(popUpText)
+            .setMaxWidth("200px")
             .addTo(map);
     });
 
