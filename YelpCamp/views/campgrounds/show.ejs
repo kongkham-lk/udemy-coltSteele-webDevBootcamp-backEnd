@@ -1,9 +1,8 @@
 <%- layout('layouts/boilerPlate') %>
     <link rel="stylesheet" href="/stylesheet/stars.css">
     <div class="row">
-        <div class="col-6 offset-3">
+        <div class="col-6">
             <!-- location to displa the map -->
-            <div id='map' style='width: 400px; height: 300px;'></div>
             <div class="card mb-5">
                 <div id="carouselExample" class="carousel slide">
                     <div class="carousel-inner">
@@ -11,7 +10,7 @@
                             <div class="carousel-item <%= i === 0 ? 'active' : '' %> ">
                                 <img src="<%= img.url %>" class="d-block w-100" alt="...">
                             </div>
-                            <% }) %>
+                        <% }) %>
                     </div>
                     <!-- remove control if there's only 1 image -->
                     <% if (campground.images.length> 1) { %>
@@ -25,7 +24,7 @@
                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
                             <span class="visually-hidden">Next</span>
                         </button>
-                        <% } %>
+                    <% } %>
                 </div>
 
                 <div class="card-body">
@@ -53,11 +52,14 @@
                             <button class="btn btn-danger">Delete</button>
                         </form>
                     </div>
-                    <% } %>
-                        <div class="card-footer text-body-secondary">
-                            2 days ago
-                        </div>
+                <% } %>
+                <div class="card-footer text-body-secondary">
+                    2 days ago
+                </div>
             </div>
+        </div>
+        <div class="col-6">
+            <div class="mb-3" id='map' style='width: 100%; height: 300px;'></div>
             <h2>Reviews</h2>
             <% if (currentUser) { %>
                 <form action="/campgrounds/<%= campground._id %>/reviews" method="POST" class="mb-4 need-validation"
@@ -88,30 +90,30 @@
                     </div>
                     <button class="btn btn-success">Submit</button>
                 </form>
-                <% } %>
-                    <% for (let review of campground.reviews) { %>
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <h5 class="card-title">
-                                    <%= review.author.username %>
-                                </h5>
-                                <h6 class="card-subtitle mt-3 text-body-secondary">
-                                    <p class="starability-result" data-rating="<%= review.rating %>">
-                                        Rated: <%= review.rating %> stars
-                                    </p>
-                                </h6>
-                                <p class="card-title">Description: <%= review.body %>
-                                </p>
-                                <% if (currentUser && review.author.equals(currentUser._id)) { %>
-                                    <form
-                                        action="/campgrounds/<%= campground._id %>/reviews/<%= review._id %>?_method=DELETE"
-                                        method="POST">
-                                        <button class="btn btn-sm btn-danger">Delete</button>
-                                    </form>
-                                    <% } %>
-                            </div>
-                        </div>
+            <% } %>
+            <% for (let review of campground.reviews) { %>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <%= review.author.username %>
+                        </h5>
+                        <h6 class="card-subtitle mt-3 text-body-secondary">
+                            <p class="starability-result" data-rating="<%= review.rating %>">
+                                Rated: <%= review.rating %> stars
+                            </p>
+                        </h6>
+                        <p class="card-title">Description: <%= review.body %>
+                        </p>
+                        <% if (currentUser && review.author.equals(currentUser._id)) { %>
+                            <form
+                                action="/campgrounds/<%= campground._id %>/reviews/<%= review._id %>?_method=DELETE"
+                                method="POST">
+                                <button class="btn btn-sm btn-danger">Delete</button>
+                            </form>
                         <% } %>
+                    </div>
+                </div>
+            <% } %>
         </div>
     </div>
 
@@ -122,6 +124,6 @@
         // NO QUOTATION - ELSE RETURN AS STRING AND IT WON'T WORK
         const campground = <%- JSON.stringify(campground) %>;
     </script>
-    
+
     <!-- link to display map default setting code file -->
-    <script src="/javascript/displayMap.js"></script>
+    <script src="/javascript/showPageMap.js"></script>
