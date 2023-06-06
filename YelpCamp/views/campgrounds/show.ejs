@@ -8,7 +8,7 @@
                     <div class="carousel-inner">
                         <% campground.images.forEach((img, i)=> { %>
                             <div class="carousel-item <%= i === 0 ? 'active' : '' %> ">
-                                <img src="<%= img.url %>" class="d-block w-100" alt="...">
+                                <img crossorigin="anonymous" src="<%= img.url %>" class="d-block w-100" alt="...">
                             </div>
                         <% }) %>
                     </div>
@@ -118,7 +118,7 @@
     </div>
 
     <!-- cannot access the value within the separate file, NEED TO access first then pass through variable. -->
-    <script>
+    <script crossorigin="anonymous" >
         const mapToken = '<%- process.env.MAPBOX_TOKEN %>';
         // JSON.stringigy(campground) => to get the log of campground (each key-value pair data)
         // NO QUOTATION - ELSE RETURN AS STRING AND IT WON'T WORK

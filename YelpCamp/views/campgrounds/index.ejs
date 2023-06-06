@@ -7,9 +7,9 @@
             <div class="row">
                 <div class="col-md-4">
                     <% if(campground.images.length) { %>
-                        <img class="img-fluid h-100 d-inline-block" src="<%= campground.images[0].url %>" alt="">
+                        <img crossorigin="anonymous" class="img-fluid h-100 d-inline-block" src="<%= campground.images[0].url %>" alt="">
                         <% } else { %>
-                            <img class="img-fluid h-100 d-inline-block" src="https://604now.com/wp-content/uploads/2020/06/joffre-lake-camping.jpg" alt="general campground picture">
+                            <img crossorigin="anonymous" class="img-fluid h-100 d-inline-block" src="https://604now.com/wp-content/uploads/2020/06/joffre-lake-camping.jpg" alt="general campground picture">
                             <% } %>
                 </div>
                 <div class="col-md-8">
@@ -30,7 +30,7 @@
         </div>
         <% } %>
 
-        <script>
+        <script crossorigin="anonymous" >
             const mapToken = '<%- process.env.MAPBOX_TOKEN %>';
             // NO QUOTATION - ELSE RETURN AS STRING AND IT WON'T WORK
             const campgrounds = {features: <%- JSON.stringify(campgrounds) %>};
