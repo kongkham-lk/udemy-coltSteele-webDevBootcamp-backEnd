@@ -30,8 +30,13 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
 const helmet = require('helmet');
+// const dbUrl = process.env.DB_URL;
+const dbUrl = 'mongodb://127.0.0.1:27017/yelpCamp';
 
-mongoose.connect('mongodb://127.0.0.1:27017/yelpCamp')
+// require mongo store
+const MongoStore = require('connect-mongo');
+
+mongoose.connect(dbUrl)
     .then(() => {
         console.log("Databse Connected");
     })
@@ -52,8 +57,22 @@ app.engine('ejs', ejsMate);
 // tell express to use public folder as default folder for static file
 app.use(express.static(path.join(__dirname, 'public')));
 
+// new MongoStore() <=SAME=> MongoStore.create()
+const mongoStore = new MongoStore({
+    mongoUrl: dbUrl,
+    secret: 'thisShouldBeASecret!',
+    // lazy session update -> update the make-change session only 1 time within 24 hours 
+    touchAfter: 24 * 3600 // time period in seconds
+})
+
+mongoStore.on('error', (e) => {
+    console.log('SESSION STORE ERROR', e);
+})
+
 // tell express to use session
 const sessionConfig = {
+    // pass in the store that create earlier
+    store: mongoStore,
     // set name into sth else => people won't recognise and use it
     name: 'session',
     secret: 'thisShouldBeASecret!',
@@ -66,7 +85,7 @@ const sessionConfig = {
         // MUST INCLUDE => for security reason
         httpOnly: true,
         // cookies can only be configured when browsing through httpS 
-        secure: true,
+        // secure: true,
         /* set expired date after 1 week, 
         => preventing stay login forever 
         => both "expires" == "maxAge" */
