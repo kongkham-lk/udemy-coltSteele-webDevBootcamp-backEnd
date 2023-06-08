@@ -11,7 +11,7 @@ const mongoose = require('mongoose');
 const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
 
-const expressError = require('./utils/ExpressError');
+const expressError = require('./utils/expressError');
 
 // restructure app.js => short code file
 const campgroundRoutes = require('./routes/campgrounds');
