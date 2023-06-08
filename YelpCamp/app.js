@@ -2,39 +2,32 @@ if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
 
-// console.log(process.env.CLOUDINARY_CLOUD_NAME)
-
 const express = require('express');
-const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
-const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
-
-const expressError = require('./utils/expressError');
-
-// restructure app.js => short code file
-const campgroundRoutes = require('./routes/campgrounds');
-const reviewRoutes = require('./routes/reviews');
-const userRoutes = require('./routes/users');
-
 // set up session and cookie for storing temp information on server-side
 const session = require('express-session');
-
 // config flash messagees
 const flash = require('connect-flash');
-
+const expressError = require('./utils/expressError');
+const methodOverride = require('method-override');
 // require passport for authentication
 // passport => allo to plug-in multiple strategies for authetication
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
 const helmet = require('helmet');
-
-const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/yelpCamp';
+const mongoSanitize = require('express-mongo-sanitize');
+// restructure app.js => short code file
+const userRoutes = require('./routes/users');
+const campgroundRoutes = require('./routes/campgrounds');
+const reviewRoutes = require('./routes/reviews');
 
 // require mongo store
 const MongoStore = require('connect-mongo');
+
+const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/yelpCamp';
 
 mongoose.connect(dbUrl)
     .then(() => {
@@ -45,18 +38,21 @@ mongoose.connect(dbUrl)
         console.log(err);
     });
 
-app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'ejs')
-app.use(express.urlencoded({ extended: true }))
-
-app.use(methodOverride('_method'));
+const app = express();
 
 // for logging request detail
 app.engine('ejs', ejsMate);
+app.set('view engine', 'ejs')
+app.set('views', path.join(__dirname, 'views'))
 
+app.use(express.urlencoded({ extended: true }))
+app.use(methodOverride('_method'));
 // tell express to use public folder as default folder for static file
 app.use(express.static(path.join(__dirname, 'public')));
-
+// prevent all the invalid symbol as input
+app.use(mongoSanitize({
+    replaceWith: '_'
+}))
 const secret = process.env.SECRET || 'thisShouldBeASecret!';
 
 // new MongoStore() <=SAME=> MongoStore.create()
@@ -95,8 +91,8 @@ const sessionConfig = {
         maxAge: 1000 * 60 * 60 * 24 * 7,
     }
 }
-app.use(session(sessionConfig));
 
+app.use(session(sessionConfig));
 // tell express to use flash + set flash middleware
 app.use(flash());
 app.use(helmet());
@@ -120,8 +116,7 @@ const styleSrcUrls = [
 ];
 const connectSrcUrls = [
     "https://api.mapbox.com/",
-    "https://a.tiles.mapbox.com/",
-    "https://b.tiles.mapbox.com/",
+    "https://*.tiles.mapbox.com/",
     "https://events.mapbox.com/",
 ];
 const fontSrcUrls = [];
@@ -133,13 +128,14 @@ app.use(
             scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
             styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
             workerSrc: ["'self'", "blob:"],
+            childSrc: ["blob:"],
             objectSrc: [],
             imgSrc: [
                 "'self'",
                 "blob:",
                 "data:",
-                "https://res.cloudinary.com/dsna5nqyl/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT! 
-                "https://images.unsplash.com/",
+                "https://res.cloudinary.com/douqbebwk/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT! 
+                "https://images.unsplash.com",
             ],
             fontSrc: ["'self'", ...fontSrcUrls],
         },
@@ -153,10 +149,11 @@ app.use(passport.initialize());
 // REMARKS -> session() must be use before passport.session()
 // if API -> then require to login for every request
 app.use(passport.session());
-
 //# tell passport to add pre-defined static method
 //=> "authetication()" (method under localStrategy of "passport" that required) are added to User model with the method name "authentication"
 passport.use(new LocalStrategy(User.authenticate()));
+
+
 // tell passport to serialize a user and vice versa => how to store in and get a user from the session 
 //=> this 2 method work due to the "passport-local-mngoose"
 passport.serializeUser(User.serializeUser());
@@ -173,13 +170,15 @@ app.use((req, res, next) => {
 
 
 // tell express to link the file will the correct path
+app.use('/', userRoutes);
 app.use('/campgrounds', campgroundRoutes);
 app.use('/campgrounds/:id/reviews', reviewRoutes);
-app.use('/', userRoutes);
+
 
 app.get('/', (req, res) => {
     res.render('home');
 })
+
 
 app.use('*', (req, res, next) => {
     next(new expressError('Page Not Found', 404))
@@ -195,5 +194,5 @@ app.use((err, req, res, next) => {
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
-    console.log(`Server on port ${port}`);
+    console.log(`Serving on port ${port}`);
 })
