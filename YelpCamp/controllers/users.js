@@ -29,7 +29,7 @@ module.exports.loginUser = (req, res) => {
     // getting the path for redrect user to after login
     const redirectUrl = req.session.returnTo || '/campgrounds';
     // after redirect, NEED TO DELETE
-    // delete req.session.returnTo;
+    delete req.session.returnTo;
     req.flash('success', 'Welcome Back!');
     // console.log(req.user);
     res.redirect(redirectUrl);
