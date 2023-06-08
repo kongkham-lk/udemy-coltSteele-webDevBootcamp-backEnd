@@ -30,8 +30,8 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
 const helmet = require('helmet');
-// const dbUrl = process.env.DB_URL;
-const dbUrl = 'mongodb://127.0.0.1:27017/yelpCamp';
+
+const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/yelpCamp';
 
 // require mongo store
 const MongoStore = require('connect-mongo');
@@ -57,10 +57,12 @@ app.engine('ejs', ejsMate);
 // tell express to use public folder as default folder for static file
 app.use(express.static(path.join(__dirname, 'public')));
 
+const secret = process.env.SECRET || 'thisShouldBeASecret!';
+
 // new MongoStore() <=SAME=> MongoStore.create()
 const mongoStore = new MongoStore({
     mongoUrl: dbUrl,
-    secret: 'thisShouldBeASecret!',
+    secret: secret,
     // lazy session update -> update the make-change session only 1 time within 24 hours 
     touchAfter: 24 * 3600 // time period in seconds
 })
@@ -75,7 +77,7 @@ const sessionConfig = {
     store: mongoStore,
     // set name into sth else => people won't recognise and use it
     name: 'session',
-    secret: 'thisShouldBeASecret!',
+    secret: secret,
     resave: false,
     saveUninitialized: true,
     /* store: mongo 
@@ -190,6 +192,8 @@ app.use((err, req, res, next) => {
     // res.send('OH NO, SOMETHING WENT WRONG !!!')
 });
 
-app.listen(3000, () => {
-    console.log('Server on port 3000');
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+    console.log(`Server on port ${port}`);
 })
