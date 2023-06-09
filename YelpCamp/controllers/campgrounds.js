@@ -1,11 +1,11 @@
 const Campground = require('../models/campground');
-const { cloudinary } = require('../cloudinary');
 // require mapbox's geocoding service 
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 // require mapbox token => in order to use the service
 const mapBoxToken = process.env.MAPBOX_TOKEN;
 // enable geocoding service by passing the token
 const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
+const { cloudinary } = require('../cloudinary');
 
 module.exports.index = async (req, res) => {
     // const currentUser = req.user;
@@ -17,7 +17,7 @@ module.exports.renderNewForm = (req, res) => {
     res.render('campgrounds/new');
 };
 
-module.exports.createNewCampground = async (req, res) => {
+module.exports.createNewCampground = async (req, res, next) => {
     // .forwardGecode(...).send() => async fuction => require await 
     //  REMARKS ".send()" => NEED TO INCLUDE, to send the query after calling .forwardGecode(...)
     const geoData = await geocoder.forwardGeocode({
@@ -61,7 +61,7 @@ module.exports.showPage = async (req, res) => {
         // console.log(campground.images[0].url);
     } catch (e) {
         res.status(404);
-        req.flash('error', 'Page Not found!')
+        req.flash('error', 'Cannot find that campground!')
         return res.redirect('/campgrounds');
         // throw new expressError('Product Not Found!!!', 404);
     }
@@ -104,7 +104,7 @@ module.exports.editCampground = async (req, res) => {
         console.log(updateCampground);
     }
     req.flash('success', 'Successfully updated campground!');
-    res.redirect(`/campgrounds/${id}`);
+    res.redirect(`/campgrounds/${updateCampground._id}`);
 };
 
 module.exports.deleteCampground = async (req, res) => {
